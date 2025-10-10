@@ -166,3 +166,99 @@ for key, value in dict3.items():
 print(dict3)
 
 # {'Alice': 92.0, 'Bob': 79.0, 'Charlie': 92.0}
+
+import re
+log = """
+[2025-10-01] Module: auth Time: 2.5s
+[2025-10-01] Module: db Time: 1.8s
+[2025-10-01] Module: auth Time: 3.1s
+[2025-10-02] Module: db Time: 2.0s
+"""
+dict1 = {}
+first = re.findall(r"\[(\S+)\]\s+Module:\s+(\S+)\s+Time:\s+(\d+\.\d+)s", log)
+
+for date, work, time in first:
+    time = float(time)  
+    if date not in dict1:
+        dict1[date] = {}
+    if work not in dict1[date]:
+        dict1[date][work] = []
+    dict1[date][work].append(time)
+for date in dict1:
+    for work in dict1[date]:
+        times = dict1[date][work]
+        avg_time = sum(times) / len(times)
+        dict1[date][work] = avg_time
+
+print(dict1)
+
+
+import re
+text = "Alice(PERSON) works at Google(ORG) in California(LOC). Bob(PERSON) joined Amazon(ORG)."
+
+match=re.findall(r"(\S+)\((\S+)\)", text)
+print(match)
+dict1={}
+for value, key in match:
+  if key not in dict1:
+    dict1[key]=[]
+  if value not in dict1[key]:
+    dict1[key].append(value)
+print(dict1)
+
+
+
+
+
+# Given a system log file, extract all IP addresses and classify them as public or private, storing the results in a dictionary.
+
+import re
+log = """
+Connected to 192.168.1.10
+Request from 8.8.8.8
+User 10.0.0.2 logged in
+Contacted 172.16.0.5 and 203.0.113.45
+"""
+
+dict2={"private":[],
+       "public":[]
+       }
+
+match3=re.findall(r"\S+\d+", log)
+print(match3)
+for i in match3:
+  if i not in dict2 and (i[0:2]==str(10) or i[0:3]==str(192) or i[0:3]==str(172)):
+
+    dict2['private'].append(i)
+  else:
+    dict2['public'].append(i)
+print(dict2)
+
+
+{
+  'private': ['192.168.1.10', '10.0.0.2', '172.16.0.5'],
+  'public': ['8.8.8.8', '203.0.113.45']
+}
+
+
+# Question:
+# Given a text of product reviews like this:
+import re
+str1="Laptop: ⭐⭐⭐⭐, Phone: ⭐⭐⭐, Laptop: ⭐⭐⭐⭐⭐, Tablet: ⭐⭐"
+
+dict4={}
+match2=re.findall(r"(\S+)\:\s(\S+\⭐)",str1)
+print(match2)
+for i, j in match2:
+  if i not in dict4:
+    dict4[i]=[len(j)]
+  else:
+    dict4[i].append(len(j))
+
+for k, l in dict4.items():
+  dict4[k]=sum(l)/len(l)
+print(dict4)
+
+
+
+{'Laptop': 4.5, 'Phone': 3.0, 'Tablet': 2.0}
