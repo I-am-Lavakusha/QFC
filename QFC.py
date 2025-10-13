@@ -262,3 +262,112 @@ print(dict4)
 
 
 {'Laptop': 4.5, 'Phone': 3.0, 'Tablet': 2.0}
+
+
+# **************************Day-05********************************************88
+
+# Question 1:
+# Create a dictionary that stores the ASCII value of each character in a given string.
+
+text = "Code"
+dict1={}
+for i in text:
+  if i in dict1:
+    continue
+  else:
+    dict1[i]=ord(i)
+print(dict1)
+
+{'C': 67, 'o': 111, 'd': 100, 'e': 101}
+
+
+#🟡 Level: Medium (Regex + Dictionary)
+
+# Question 2:
+# You are given a text that contains dates in various formats.
+# Extract all valid dates and store them in a dictionary with their index as the key and the date string as the value.
+
+import re
+text = "Meetings are on 2025-10-06, 10/07/2025, and 08-Nov-2025."
+dict2={}
+search1=re.findall(r"\S+\d+", text)
+print(search1)
+num=0
+for i in range(len(search1)):
+  dict2.update({num:search1[i]})
+  num+=1
+print(dict2)
+
+
+
+# 🔴 Level: Hard (Regex + Dictionary Aggregation)
+
+# Question 3:
+# Extract domain names from a text of email addresses and count how many times each domain appears.
+
+import re
+dict3={}
+text = "mike@gmail.com, anna@yahoo.com, bob@gmail.com, tom@outlook.com, jane@yahoo.com"
+search2=re.findall(r"\S+\@(\S+)", text, re.MULTILINE)
+print(search2)
+for i in search2:
+  print(i)
+  if i in dict3:
+    dict3[i]+=1
+  else:
+    dict3[i]=1
+
+print(dict3)
+
+{'gmail.com': 2, 'yahoo.com': 2, 'outlook.com': 1}
+
+
+
+# 🔴 Level: Hard (Nested Dictionary + Regex)
+
+# Question 4:
+# You are given logs of students and their scores in various subjects.
+# Extract data and store it in a nested dictionary where the key is the student name and the value is another dictionary of subject: score.
+
+import re
+log = """
+Student: Alice Subject: Math Score: 89
+Student: Bob Subject: Physics Score: 76
+Student: Alice Subject: English Score: 92
+"""
+
+search3=re.findall(r"\S+\s+(\S+)\s+\S+\s+(\S+)\s+\S+\s+(\S+)", log)
+print(search3)
+dict4={}
+for i, j, k in search3:
+  if i not in dict4:
+    dict4[i]={}
+  dict4[i][j]=k
+
+print(dict4)
+
+# 🔴 Level: Hard (Regex Data Grouping + Dictionary of Lists)
+
+# Question 5:
+# Given a chat log containing messages with usernames and timestamps, extract each user and the messages they sent in a dictionary format.
+
+import re
+chat = """
+[10:01] Alice: Hi Bob!
+[10:02] Bob: Hey Alice!
+[10:03] Alice: How are you?
+"""
+dict4={}
+search4=re.findall(r"\S+\s+(\S+)\:\s+(.+)", chat)
+for i, j in search4:
+  if i not in dict4:
+    dict4[i]=[j]
+  else:
+    dict4[i].append(j)
+
+print(dict4)
+
+# {
+#   'Alice': ['Hi Bob!', 'How are you?'],
+#   'Bob': ['Hey Alice!']
+# }
