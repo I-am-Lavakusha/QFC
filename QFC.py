@@ -371,3 +371,169 @@ print(dict4)
 #   'Alice': ['Hi Bob!', 'How are you?'],
 #   'Bob': ['Hey Alice!']
 # }
+
+ Question 1:
+# You are given a list of temperatures in Celsius.
+# Write a program to convert them to Fahrenheit and store the results in a dictionary where key = Celsius value and value = Fahrenheit value.
+
+temps = [0, 20, 37, 100]
+dict1={}
+for i in temps:
+  dict1[i]=(i*9/5)+32
+print(dict1)
+
+{0: 32.0, 20: 68.0, 37: 98.6, 100: 212.0}
+
+
+# 🟡 Level: Medium — Regex Mapping and Replacement
+
+# Question 2:
+# You are given a paragraph containing text-based emojis.
+# Create a dictionary mapping each emoji symbol to its word meaning (like ":)" → "smile") using regex, then replace all emojis in the text with their meanings.
+import re
+text = "Hey :) How are you :( I missed you <3"
+words=[]
+s=text.split(" ")
+for i in s:
+  if i==":)":
+    words.append("smile")
+  elif i==":(":
+    words.append("sad")
+  elif i=="<3":
+    words.append("love")
+  else:
+    words.append(i)
+words=(" ").join(words)
+dict2={}
+search1=re.findall(r"\<\d|\:\(|\:\)", text)
+for i in search1:
+  if i==":)":
+    dict2[i]="smile"
+  elif i==":(":
+    dict2[i]="sad"
+  else:
+    dict2[i]="love"
+
+print(dict2)
+print(words)
+
+
+{':)': 'smile', ':(': 'sad', '<3': 'love'}
+# Modified text: "Hey smile How are you sad I missed you love
+
+
+# 🔴 Level: Hard — Regex + Dictionary Reverse Index
+
+# Question 3:
+# You are given a paragraph of text.
+# Write a program to create a reverse index dictionary where:
+
+# Each word (case-insensitive) is a key
+
+# The value is a list of sentence numbers where the word appears
+
+import re
+
+text = "Python is great. I love Python programming. Great tools exist for Python."
+search2 = re.split(r'\.\s*', text)
+print(search2)
+result = {}
+
+i = 1
+for j in search2:
+    print(j)
+    count = re.findall(r'\b\w+\b', j.lower())
+    print(count)
+    for key in count:
+        if key not in result:
+            result[key] = [i]
+        elif i not in result[key]:
+            result[key].append(i)
+    i += 1
+
+print(result)
+
+
+
+{
+  'python': [1, 2, 3],
+  'is': [1],
+  'great': [1, 3],
+  'i': [2],
+  'love': [2],
+  'programming': [2],
+  'tools': [3],
+  'exist': [3],
+  'for': [3]
+}
+
+
+
+# Question 4:
+# Write a Python program that analyzes a server log file and categorizes log entries into a dictionary based on log level (INFO, ERROR, DEBUG, etc.).
+import re
+log = """
+[INFO] System started
+[DEBUG] Loading configuration
+[ERROR] Connection failed
+[INFO] Retrying connection
+"""
+
+search3=re.findall(r"\[(\S+)\]\s+(.*)", log)
+print(search3)
+result={}
+for i, j in search3:
+  if i not in result:
+    result[i]=[j]
+  else:
+    result[i].append(j)
+print(result)
+
+{
+  'INFO': ['System started', 'Retrying connection'],
+  'DEBUG': ['Loading configuration'],
+  'ERROR': ['Connection failed']
+}
+
+
+# ---
+
+# 🔴 Level: Hard — Dictionary Merging + Regex Parsing
+
+# Question 5:
+# You are given two product data strings from different systems.
+# Each contains product IDs and prices.
+# Use regex to extract the data and merge into a single dictionary —
+# if the same product appears in both, keep the average price.
+
+
+import re
+data1 = "ID101: $50, ID102: $75, ID103: $100"
+data2 = "ID102: $65, ID104: $120, ID101: $55"
+result5={}
+search4=re.findall(r"(\S+)\:\s+\$(\d+)", data1)
+search5=re.findall(r"(\S+)\:\s+\$(\d+)", data2)
+
+for i, j in search4:
+  if i not in result5:
+    result5[i]=[int(j)]
+  else:
+    result5[i].append(int(j))
+
+for i, j in search5:
+  if i not in result5:
+    result5[i]=[int(j)]
+  else:
+    result5[i].append(int(j))
+
+for i, j in result5.items():
+  result5[i]=sum(j)/len(j)
+print(result5)
+
+
+{
+  'ID101': 52.5,
+  'ID102': 70.0,
+  'ID103': 100.0,
+  'ID104': 120.0
+}
