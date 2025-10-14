@@ -372,6 +372,8 @@ print(dict4)
 #   'Bob': ['Hey Alice!']
 # }
 
+**************************************Day-06****************************************************8888
+
  Question 1:
 # You are given a list of temperatures in Celsius.
 # Write a program to convert them to Fahrenheit and store the results in a dictionary where key = Celsius value and value = Fahrenheit value.
