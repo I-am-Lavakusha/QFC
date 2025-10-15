@@ -372,7 +372,7 @@ print(dict4)
 #   'Bob': ['Hey Alice!']
 # }
 
- Question 1:
+#  Question 1:
 # You are given a list of temperatures in Celsius.
 # Write a program to convert them to Fahrenheit and store the results in a dictionary where key = Celsius value and value = Fahrenheit value.
 
@@ -537,3 +537,126 @@ print(result5)
   'ID103': 100.0,
   'ID104': 120.0
 }
+
+# ion 1:
+
+# Write a Python program that takes a list of fruits and their prices in two separate lists and combines them into a dictionary mapping fruit → price.
+
+fruits = ["apple", "banana", "cherry"]
+prices = [100, 40, 150]
+dict1={}
+for i  in range(len(fruits)):
+  for j in range(len(prices)):
+    dict1[fruits[i]]=prices[i]
+    break
+print(dict1)
+# {'apple': 100, 'banana': 40, 'cherry': 150}
+
+ 
+
+# 🟡 Medium (Regex Extraction + Dictionary)
+
+# Question 2:
+
+# Given a paragraph containing product names followed by IDs in brackets, extract all pairs and store them in a dictionary with product name as key and ID as value.
+
+import re
+text = "Laptop (P123), Mouse (P456), Keyboard (P789)"
+search1=re.findall(r"(\S+)\s+\((\S+)\)", text)
+dict2={}
+for i, j in search1:
+  dict2[i]=j
+print(dict2)
+
+{'Laptop': 'P123', 'Mouse': 'P456', 'Keyboard': 'P789'}
+
+
+
+# 🔴 Hard (Regex + Data Grouping)
+
+# Question 3:
+
+# You have a set of system event logs.
+
+# Extract all timestamps, usernames, and actions, and create a dictionary where each username maps to a list of tuples — each tuple containing timestamp and action.
+import re
+log = """
+
+[2025-10-06 10:00] user=alice action=login
+
+[2025-10-06 10:05] user=bob action=upload
+
+[2025-10-06 10:15] user=alice action=logout
+
+"""
+search2=re.findall(r"\[(\S+\s+\S+)\]\s+\S+\=(\S+)\s+\S+\=(\S+)", log)
+dict3={}
+for i, j, k in search2:
+  if j not in dict3:
+    dict3[j]=[(i, k)]
+  else:
+    dict3[j].append((i, k))
+print(dict3)
+
+{
+
+  'alice': [('2025-10-06 10:00', 'login'), ('2025-10-06 10:15', 'logout')],
+
+  'bob': [('2025-10-06 10:05', 'upload')]
+
+}
+
+# 🔴 Hard (Regex + Dictionary Aggregation)
+
+# Question 4:
+
+# You are given survey results containing ratings per department.
+
+# Extract each department and its numeric ratings, and compute the average rating per department using a dictionary.
+
+import re
+text = "HR: 4, IT: 5, HR: 3, Finance: 4, IT: 4"
+search3=re.findall(r"(\S+)\:\s*(\d+)", text)
+dict4={}
+for i, j in search3:
+  if i not in dict4:
+    dict4[i]=[int(j)]
+  else:
+    dict4[i].append(int(j))
+for i, j in dict4.items():
+  dict4[i]=sum(j)/len(j)
+print(dict4)
+# {'HR': 3.5, 'IT': 4.5, 'Finance': 4.0}
+
+
+# 🔴 Hard (Regex + Nested Dictionary)
+
+# Question 5:
+
+# Given a text containing employee details, extract the department, employee name, and salary, and store the information in a nested dictionary grouped by department.
+import re
+data = """
+
+Dept: HR Name: Alice Salary: 50000
+
+Dept: IT Name: Bob Salary: 60000
+
+Dept: HR Name: Carol Salary: 52000
+
+"""
+search5=re.findall(r"\S+\s+(\S+)\s+\S+\s+(\S+)\s+\S+\s+(\d+)", data)
+dict5={}
+for i, j, k in search5:
+  if i not in dict5:
+    dict5[i]={j:k}
+  else:
+    dict5[i].update({j:k})
+print(dict5)
+
+# {
+
+#   'HR': {'Alice': 50000, 'Carol': 52000},
+
+#   'IT': {'Bob': 60000}
+
+# }
