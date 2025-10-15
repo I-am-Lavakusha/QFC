@@ -372,7 +372,13 @@ print(dict4)
 #   'Bob': ['Hey Alice!']
 # }
 
+<<<<<<< HEAD
 #  Question 1:
+=======
+**************************************Day-06****************************************************8888
+
+ Question 1:
+>>>>>>> 94b28085c89f0d6bf8b891a4d9f107491adcc7a5
 # You are given a list of temperatures in Celsius.
 # Write a program to convert them to Fahrenheit and store the results in a dictionary where key = Celsius value and value = Fahrenheit value.
 
@@ -537,6 +543,7 @@ print(result5)
   'ID103': 100.0,
   'ID104': 120.0
 }
+<<<<<<< HEAD
 
 # ion 1:
 
@@ -660,3 +667,5 @@ print(dict5)
 #   'IT': {'Bob': 60000}
 
 # }
+=======
+>>>>>>> 94b28085c89f0d6bf8b891a4d9f107491adcc7a5
