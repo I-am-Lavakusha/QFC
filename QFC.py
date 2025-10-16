@@ -667,5 +667,224 @@ print(dict5)
 #   'IT': {'Bob': 60000}
 
 # }
-=======
->>>>>>> 94b28085c89f0d6bf8b891a4d9f107491adcc7a5
+
+# ******************************Day-07****************************************
+
+# Create a class StudentRecord that takes a block of text containing student details.
+# Use regex to extract student name, ID, and marks and store them in a dictionary as:
+# {student_id: {"name": name, "marks": marks}}
+import re
+data = """
+  ID: S101 Name: Alice Marks: 89
+  ID: S102 Name: Bob Marks: 76
+  ID: S103 Name: Carol Marks: 91
+"""
+class StudentRecord:
+  def __init__(self, data):
+    self.data=data
+
+  def get_all(self):
+    
+    search=re.findall(r"\S+\s+(\S+)\s+\S+\s+(\S+)\s+\S+\s+(\d+)", data)
+    dict1={}
+    for i, j, k in search:
+      if i not in dict1:
+        dict1[i]={"name":j, "marks":k}
+      else:
+        dict1[i].update({"name":j, "marks":k})
+    print(dict1)
+
+
+record = StudentRecord(data)
+record.get_all()
+
+# {
+#   'S101': {'name': 'Alice', 'marks': 89},
+#   'S102': {'name': 'Bob', 'marks': 76},
+#   'S103': {'name': 'Carol', 'marks': 91}
+# }
+
+
+# 🔴 Hard Question 2 — Class + Regex Log Analyzer
+
+# Create a class LogAnalyzer that can parse a log file using regex.
+# Each log entry contains a timestamp, level, and message.
+# The class should store logs in a dictionary grouped by log level and provide methods:
+
+import re
+log = """
+[2025-10-06 10:00] INFO Server started
+[2025-10-06 10:05] ERROR Connection failed
+[2025-10-06 10:10] INFO Retrying connection
+[2025-10-06 10:12] DEBUG Retrying sequence
+"""
+dict2={}
+class LogAnalyzer:
+  def __init__(self, log):
+    self.log=log
+  
+  def get_errors(self):
+    search1=re.findall(r"^\S+\s+\S+\s+(\S+)", log, re.MULTILINE)
+    for i in search1:
+      if i in dict2:
+        dict2[i]+=1
+      else:
+        dict2[i]=1
+  
+  def count_by_level(self):
+    print(dict2)
+
+
+log1=LogAnalyzer(log)
+log1.get_errors()
+log1.count_by_level()
+
+
+# Expected Output:
+
+{
+  'INFO': 2,
+  'ERROR': 1,
+  'DEBUG': 1
+}
+
+
+# 🔴 Hard Question 3 — Class + Regex Validation + Dictionary
+
+# Create a class UserValidator that reads user registration data from text and validates using regex.
+# Each user record contains a username, email, and phone.
+# The class should store valid users in a dictionary with username as key and (email, phone) as value.
+# Invalid entries should be ignored.
+
+# Example Input:
+import re
+dict3={}
+data = """
+Username: john Email: john@example.com Phone: 9876543210
+Username: anna Email: anna@@example Phone: 12345
+Username: mark Email: mark@gmail.com Phone: 9123456789
+"""
+class UserValidator:
+  def __init__(self, data):
+    self.data=data
+  
+  def valid(self):
+    search=re.findall(r"^\S+\s+(\S+)\s+\S+\s+(\S+\@{1}\S+\.\S+)\s+\S+\s+(\d{10})", data, re.MULTILINE)
+    for i, j, k in search:
+      # if i not in dict3:
+      dict3[i]=(j, k)
+    return dict3
+
+user=UserValidator(data)
+print(user.valid())
+    
+
+# Expected Output:
+
+# {
+#   'john': ('john@example.com', '9876543210'),
+#   'mark': ('mark@gmail.com', '9123456789')
+# }
+
+
+# 🔴 Hard Question 4 — Regex + Nested Dictionary Builder (Inventory System)
+
+# You are given a text that represents a warehouse stock log.
+# Each entry includes a category, item name, and quantity.
+# Write a program (or class) to extract this information using regex and store it as a nested dictionary in the form {category: {item: quantity}}.
+
+# Example Input:
+import re
+data = """
+Category: Electronics Item: Laptop Qty: 10
+Category: Electronics Item: Phone Qty: 25
+Category: Furniture Item: Chair Qty: 15
+Category: Furniture Item: Table Qty: 5
+"""
+dict4={}
+class Shop:
+  def __init__(self,data):
+    self.data=data
+  def stock(self):
+    search=re.findall(r"\S+\s+(\S+)\s+\S+\s+(\S+)\s+\S+\s+(\d+)",data)
+    for i, k, j in search:
+      if i not in dict4:
+        dict4[i]={k:j}
+      else:
+        dict4[i].update({k:j})
+    print(dict4)
+
+items=Shop(data)
+items.stock()
+
+# {
+#   'Electronics': {'Laptop': 10, 'Phone': 25},
+#   'Furniture': {'Chair': 15, 'Table': 5}
+# }
+
+
+# 🔴 Hard Question 5 — Class + Regex Log Summary Generator
+
+# Create a class AccessLog that takes in a server access log text.
+# Use regex to extract IP addresses, endpoints, and status codes, then:
+
+# Store the results in a dictionary grouped by IP address.
+
+# Add a method summary() that prints the count of requests per IP and the most common status code for that IP.
+
+
+# Example Input:
+import re
+
+log = """
+192.168.1.10 - GET /home 200
+192.168.1.10 - POST /login 403
+10.0.0.2 - GET /home 200
+192.168.1.10 - GET /dashboard 200
+"""
+
+dict5 = {}
+
+class Accesslog:
+  def __init__(self, log):
+    self.log = log
+
+  def summary(self):
+    search5 = re.findall(r"(\d+\.\d+\.\d+\.\d+)\s+-\s+\S+\s+(\/\S+)\s+(\d+)", self.log)
+
+    for i, j, k in search5:
+      if i not in dict5:
+        dict5[i] = [{"endpoint": j, "status": int(k)}]
+      else:
+        dict5[i].append({"endpoint": j, "status": int(k)})
+
+    print(dict5)
+
+    for ip, records in dict5.items():
+      status_list = [rec["status"] for rec in records]
+      status_counts = {}
+      for s in status_list:
+        status_counts[s] = status_counts.get(s, 0) + 1
+      most_common_status = max(status_counts, key=status_counts.get)
+      print(f"{ip} → {len(records)} requests, Most common status: {most_common_status}")
+
+
+obj = Accesslog(log)
+obj.summary()
+
+# {
+#   '192.168.1.10': [
+#       {'endpoint': '/home', 'status': 200},
+#       {'endpoint': '/login', 'status': 403},
+#       {'endpoint': '/dashboard', 'status': 200}
+#   ],
+#   '10.0.0.2': [
+#       {'endpoint': '/home', 'status': 200}
+#   ]
+# }
+
+# and
+
+# Summary:
+# 192.168.1.10 → 3 requests, Most common status: 200  
+# 10.0.0.2 → 1 request, Most common status: 200
