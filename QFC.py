@@ -889,6 +889,195 @@ obj.summary()
 # 192.168.1.10 → 3 requests, Most common status: 200  
 # 10.0.0.2 → 1 request, Most common status: 200
 
+# *********************************(Day-09)*******************************
+
+# Hard Question 1 — Class + Regex Template Engine
+
+# Create a class TemplateEngine that replaces placeholders in a text using a dictionary of variables.
+# Placeholders are written in double curly braces {{variable_name}}.
+# Use regex to identify and replace them dynamically.
+
+# Example Input:
+
+# text = "Hello {{name}}, your order {{order_id}} will be delivered by {{date}}."
+# data = {"name": "Ravi", "order_id": "A1023", "date": "2025-10-06"}
+
+# Expected Output:
+
+# "Hello Ravi, your order A1023 will be delivered by 2025-10Python', 'ML', ], }"
+
+import re
+class Change:
+    def __init__(self, text):
+        self.text = text
+    def Parse(self, data):
+        pattern = re.findall(r"\{\{(\w+)\}\}", self.text)
+        res = self.text
+        for key in pattern:
+            if key in data:
+                res = res.replace(f"{{{{{key}}}}}", str(data[key]))
+        return res
+text = "Hello {{name}}, your order {{order_id}} will be delivered by {{date}}."
+data = {"name": "Ravi", "order_id": "A1023", "date": "2025-10-06"}
+engine = Change(text)
+print(engine.Parse(data))
+
+# Expected Output:
+
+{
+  'name': 'Alice',
+  'age': 25,
+  'skills': ['Python', 'ML']
+}
+
+# ⚡ Hard Question 2 — Regex + Dictionary + File Metadata Parser
+
+# You’re given multiple lines describing file details in a log.
+# Each line contains a filename, extension, size (in KB), and modified date.
+# Use regex to parse and store the data in a dictionary grouped by file extension.
+
+# Example Input:
+import re
+data = """
+file1.txt size:12KB modified:2025-10-05
+report.pdf size:230KB modified:2025-09-30
+notes.txt size:8KB modified:2025-10-06
+image.png size:1024KB modified:2025-08-20
+"""
+pattern = re.findall(r"(\w+)\.(\w+)\s+\S+:(\d+)\S+\s+\S+:(\d{4}-\d{2}-\d{2})", data)
+dic = {}
+for i, j, k,l in pattern:
+    if j not in dic:
+        dic[j] = []
+    dic[j].append({"name": i,"size": int(k),"modified": l})
+print(dic)
+# Expected Output:
+
+{
+  'txt': [{'name': 'file1', 'size': 12, 'modified': '2025-10-05'},
+          {'name': 'notes', 'size': 8, 'modified': '2025-10-06'}],
+  'pdf': [{'name': 'report', 'size': 230, 'modified': '2025-09-30'}],
+  'png': [{'name': 'image', 'size': 1024, 'modified': '2025-08-20'}]
+}
+
+# ⚡ Hard Question 3 — Class + Nested Dictionary + Regex Config Loader
+
+# Write a class ConfigParser that reads configuration data formatted like:
+
+# [Database]
+# host=localhost
+# port=5432
+# [Server]
+# debug=True
+# port=8000
+
+# Use regex to extract section headers ([Section]) and key-value pairs.
+# Store the data as a nested dictionary, e.g.
+
+# {
+#   'Database': {'host': 'localhost', 'port': '5432'},
+#   'Server': {'debug': 'True', 'port': '8000'}
+# }
+
+# Add a method get(section, key) that retrieves a specific configuration value.
+
+
+import re
+class ConfigParser:
+    def __init__(self, data):
+        self.data = data
+        pattern = re.findall(r'\[(\S+)\]\s+(\S+)\=(\S+)\s+(\S+)\=(\S+)', data)
+        self.pattern = pattern
+        self.dic = {}
+        for section, host, i, port, j in pattern:
+            self.dic[section] ={host: i,port: j}
+    def get(self, section, key):
+        return self.dic.get(section, {}).get(key)
+data = """
+[Database]
+host=localhost
+port=5432
+[Server]
+debug=True
+port=8000
+"""
+cfg = ConfigParser(data)
+print(cfg.dic)
+print(cfg.get("Database", "host"))
+print(cfg.get("Server", "port"))
+
+
+
+# ⚡ Hard Question 4 — Class + Regex + Dictionary Merging
+
+# Create two dictionaries from separate text logs using regex extraction,
+# then merge them intelligently based on a shared key (user_id).
+# The class DataMerger should handle conflicts by choosing the latest timestamp entry.
+
+# Example Input:
+import re
+class DataMerger:
+    def __init__(self, log1, log2):
+        self.log1 = log1
+        self.log2 = log2
+
+    def merge(self):
+        data = {}
+        logs = self.log1 + "\n" + self.log2
+        pattern = r"user:(\d+)(?:\s+name:(\w+))?(?:\s+age:(\d+))?\s+time:(\d{2}:\d{2})"
+        matches = re.findall(pattern, logs)
+        for i, j, k, l in matches:
+            if i not in data:
+                data[i] = {}
+            if j:
+                data[i]['name'] = j
+            if k:
+                data[i]['age'] = int(k)
+            if 'time' not in data[i] or l > data[i]['time']:
+                data[i]['time'] = l
+
+        return data
+log1 = """
+user:101 name:Ravi time:10:00
+user:102 name:Kumar time:10:10
+"""
+log2 = """
+user:101 age:30 time:10:05
+user:102 age:28 time:09:50
+"""
+dm = DataMerger(log1, log2)
+print(dm.merge())
+
+# ⚡ Hard Question 5 — Regex-Based JSON Cleaner (Class Implementation)
+
+# Write a class JSONSanitizer that takes a messy string containing pseudo-JSON data
+# and uses regex to clean it up into a valid JSON-like dictionary.
+# The input may contain extra spaces, single quotes, or trailing commas.
+
+# Example Input:
+import re
+import json
+
+class JSONSanitizer:
+    def __init__(self, text):
+        self.text = text
+    def clean(self):
+        t = self.text
+        t = re.sub(r"'", '"',t)
+        t = re.sub(r",\s*([}\]])", r"\1", t)
+        return json.loads(t)
+text = "{ 'name': 'Alice', 'age': 25, 'skills': ['Python', 'ML', ], }"
+sanitizer = JSONSanitizer(text)
+print(sanitizer.clean())
+# Expected Output:
+
+{
+  'name': 'Alice',
+  'age': 25,
+  'skills': ['Python', 'ML']
+}
+
+
 
 # **********************************Day-10*********************************
 
