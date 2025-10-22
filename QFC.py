@@ -888,3 +888,281 @@ obj.summary()
 # Summary:
 # 192.168.1.10 → 3 requests, Most common status: 200  
 # 10.0.0.2 → 1 request, Most common status: 200
+
+
+# **********************************Day-10*********************************
+
+# Hard Question 1 — Class Inheritance + Regex Log Routing System
+
+# Design a base class BaseLogParser that defines a method parse_line(line) (to be overridden).
+# Create subclasses ErrorLogParser, InfoLogParser, and DebugLogParser — each uses a different regex to extract data.
+# Finally, write a LogRouter class that routes each log line to the correct subclass based on the log level and returns a combined dictionary of parsed data.
+
+# Example Input:
+import re
+
+class BaseLogParser:
+    def parse_line(self, line):
+        pass
+class ErrorLogParser(BaseLogParser):
+    def parse_line(self, line):
+        m = re.match(r"\[(.*?)\]\s*ERROR\s*(.*)", line)
+        if m:
+            return {'timestamp': m.group(1), 'msg': m.group(2)}
+class InfoLogParser(BaseLogParser):
+    def parse_line(self, line):
+        m = re.match(r"\[(.*?)\]\s*INFO\s*(.*)", line)
+        if m:
+            return {'timestamp': m.group(1), 'msg': m.group(2)}
+
+
+class DebugLogParser(BaseLogParser):
+    def parse_line(self, line):
+        m = re.match(r"\[(.*?)\]\s*DEBUG\s*(.*)", line)
+        if m:
+            return {'timestamp': m.group(1), 'msg': m.group(2)}
+class LogRouter:
+    def __init__(self):
+        self.parsers = {
+            'ERROR': ErrorLogParser(),
+            'INFO': InfoLogParser(),
+            'DEBUG': DebugLogParser()
+        }
+
+    def route_logs(self, logs):
+        result = {}
+        for line in logs:
+            for level, parser in self.parsers.items():
+                if level in line:
+                    data = parser.parse_line(line)
+                    if data:
+                        result.setdefault(level, []).append(data)
+                    break
+        return result
+
+logs = [
+    "[2025-10-06 09:10] ERROR Disk full at /var/log",
+    "[2025-10-06 09:12] INFO Backup started",
+    "[2025-10-06 09:14] DEBUG Checking permissions"
+]
+
+router = LogRouter()
+print(router.route_logs(logs))
+
+
+
+# Expected Output:
+
+{
+  'ERROR': [{'timestamp': '2025-10-06 09:10', 'msg': 'Disk full at /var/log'}],
+  'INFO': [{'timestamp': '2025-10-06 09:12', 'msg': 'Backup started'}],
+  'DEBUG': [{'timestamp': '2025-10-06 09:14', 'msg': 'Checking permissions'}]
+}
+
+
+# ---
+
+# ⚔️ Hard Question 2 — Class + Regex Data Extraction + Transformation
+
+# Create a class TransactionAnalyzer that reads a multiline string of transactions with varying formats (use regex to normalize).
+# Then aggregate them by user_id in a dictionary.
+
+# Example Input:
+
+import re
+class TransactionAnalyzer:
+    def __init__(self,data):
+        pattern= re.findall(r'\S+[-=:]\s*(\d+).*?[\$ ](\d+(?:\.\d+)?).*?(?:on|date\=)\s*(\d{4}[-/]\d{2}[-/]\d{2})',data)
+        self.pattern=pattern
+    def parser(self):
+        dic = {}
+        for i, amount, k in self.pattern:
+            amount = float(amount)
+            if i not in dic:
+                dic[i] = {'total': 0.00, 'transactions': 0}
+            dic[i]['total'] += round(amount,2)
+            dic[i]['transactions'] += 1
+        return dic
+data = """
+user-101: paid $45.60 on 2025/10/06
+user=102 amount 120.00 date=2025-10-05
+user:103 paid 60.5 on 2025-10-04
+user=101 paid $10.40 on 2025-10-06
+"""
+d=TransactionAnalyzer(data)
+print(d.parser())
+
+# Expected Output:
+
+# {
+#   '101': {'total': 56.00, 'transactions': 2},
+#   '102': {'total': 120.00, 'transactions': 1},
+#   '103': {'total': 60.50, 'transactions': 1}
+# }
+
+
+# ---
+
+# ⚔️ Hard Question 3 — Class + Regex Pattern Inheritance + Validation System
+
+# Build a class hierarchy for input validation using regex:
+
+# BaseValidator → defines an abstract method validate(value)
+
+# EmailValidator, PhoneValidator, and PasswordValidator → each implements regex-based validation
+# Then write a class UserInputChecker that takes a dictionary of inputs and validates each using the correct subclass.
+
+
+# Example Input:
+import re
+class EmailValidator:
+    def validate(self, value):
+        pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        return bool(re.match(pattern, value))
+class PhoneValidator:
+    def validate(self, value):
+        pattern = r'^(?:\+?\d{1,3})?\d{10}$'
+        return bool(re.match(pattern, value))
+class PasswordValidator:
+    def validate(self, value):
+        pattern = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+        return bool(re.match(pattern, value))
+class UserInputChecker:
+    def __init__(self):
+        self.validators = {
+            'email': EmailValidator(),
+            'phone': PhoneValidator(),
+            'password': PasswordValidator()
+        }
+    def check_inputs(self, inputs):
+        dic= {}
+        for key, value in inputs.items():
+            if key in self.validators:
+                dic[key] = self.validators[key].validate(value)
+            else:
+                dic[key] = False
+        return dic
+inputs = {
+    "email": "user@example.com",
+    "phone": "+919876543210",
+    "password": "Pass@123"
+}
+
+checker = UserInputChecker()
+print(checker.check_inputs(inputs))
+
+
+# Expected Output:
+
+# {
+#   'email': True,
+#   'phone': True,
+#   'password': True
+# }
+
+
+# ---
+
+# ⚔️ Hard Question 4 — Regex + Dictionary-Based Dependency Graph
+
+# Given a text describing module dependencies,
+# use regex to extract relationships and build a dependency graph dictionary
+# where keys are modules and values are lists of dependencies.
+
+# Example Input:
+import re
+
+text = """
+ModuleA depends on ModuleB, ModuleC
+ModuleB depends on ModuleD
+ModuleC depends on ModuleE, ModuleF
+ModuleD depends on None
+ModuleE depends on None
+ModuleF depends on None
+"""
+pattern=re.findall(r"(\w+)\s+depends\s+on\s+(.*)",text)
+d={}
+for i,j in pattern:
+    if i not in d:
+        d[i]=[]
+    if j!="None":
+        for k in j.split(","):
+            d[i].append(k)
+print(d)
+
+
+# Expected Output:
+
+# {
+#   'ModuleA': ['ModuleB', 'ModuleC'],
+#   'ModuleB': ['ModuleD'],
+#   'ModuleC': ['ModuleE', 'ModuleF'],
+#   'ModuleD': [],
+#   'ModuleE': [],
+#   'ModuleF': []
+# }
+
+
+# ---
+
+# ⚔️ Hard Question 5 — Class Composition + Regex Report Generator
+
+# Create a class ReportBuilder that uses composition with another class RegexExtractor.
+# RegexExtractor extracts dates, amounts, and IDs from text using regex.
+# ReportBuilder organizes the extracted info into a summary dictionary and generates a formatted string report.
+
+# Example Input:
+
+import re
+
+class RegexExtractor:
+    def __init__(self, text):
+        self.text = text
+class ReportBuilder:
+    def __init__(self, text):
+        self.extractor = RegexExtractor(text)
+
+    def build_summary(self):
+        summary = {}
+        pattern = r"Transaction ID:\s*(\w+)\s*\|\s*Date:\s*(\d{4}-\d{2}-\d{2})\s*\|\s*Amount:\s*\$([\d.]+)"
+        for txn_id, date, amount in re.findall(pattern, self.extractor.text):
+            amount = float(amount)
+            if date not in summary:
+                summary[date] = []
+            summary[date].append({'id': txn_id, 'amount': amount})
+        return summary
+
+    def generate_report(self):
+        summary = self.build_summary()
+        lines = []
+        for date, txns in summary.items():
+            total = sum(txn['amount'] for txn in txns)
+            lines.append(f"Date: {date} → Total: {total:.2f}")
+        return "\n".join(lines)
+data = """
+Transaction ID: TXN101 | Date: 2025-10-06 | Amount: $450.75
+Transaction ID: TXN102 | Date: 2025-10-07 | Amount: $320.00
+Transaction ID: TXN103 | Date: 2025-10-07 | Amount: $100.50
+"""
+
+builder = ReportBuilder(data)
+
+summary = builder.build_summary()
+print(summary)
+
+print(builder.generate_report())
+
+# Expected Output:
+
+# {
+#   '2025-10-06': [{'id': 'TXN101', 'amount': 450.75}],
+#   '2025-10-07': [
+#       {'id': 'TXN102', 'amount': 320.00},
+#       {'id': 'TXN103', 'amount': 100.50}
+#   ]
+# }
+
+# and a report like:
+
+# Date: 2025-10-06 → Total: 450.75
+# Date: 2025-10-07 → Total: 420.50
