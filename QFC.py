@@ -1355,3 +1355,179 @@ print(builder.generate_report())
 
 # Date: 2025-10-06 → Total: 450.75
 # Date: 2025-10-07 → Total: 420.50
+
+
+
+# ****************************************Day - 11 *************************************8
+#  Medium (Level 1) — Regex + Dictionary Formatter
+
+# Write a program that extracts name, age, and city from a messy multiline text and stores it in a list of dictionaries.
+import re
+data = """
+Name: John, Age=25; City-London
+Name=Alice; Age:30 City:NewYork
+City:Paris Name=Mike Age=22
+"""
+name=re.findall(r'Name[:=]\s*(\S+)',data)
+print(name)
+age=re.findall(r'Age[:=]\s*(\d+)',data)
+print(age)
+city=re.findall(r'City[-:=>]\s*(\S+)',data)
+print(city)
+
+result=[]
+for name, age, city in zip(name, age, city):
+    result.append({'name': name, 'age': int(age), 'city': city})
+print(result)
+
+# expected_output
+[
+  {'name': 'John', 'age': 25, 'city': 'London'},
+  {'name': 'Alice', 'age': 30, 'city': 'NewYork'},
+  {'name': 'Mike', 'age': 22, 'city': 'Paris'}
+]
+
+
+
+# 🔵 Hard (Level 2) — Class + Regex-Based Resume Parser
+
+# Create a class ResumeParser that takes raw resume text and extracts:
+
+# Name
+
+# Email
+
+# Phone number
+
+# Skills list (comma-separated)
+
+
+# Store each resume as a dictionary entry using the person’s name as the key.
+
+# Example Input:
+import re
+data = """
+Name: Ravi Kumar
+Email: ravi.k@example.com
+Phone: +919876543210
+Skills: Python, Automation, Networking
+
+Name: Priya Sharma
+Email: priya.s@gmail.com
+Phone: 9123456789
+Skills: Data Analysis, SQL, Tableau
+"""
+class ResumeParser:
+    def __init__(self, data):
+        self.raw_text = data
+
+    def parse(self):
+        pattern=re.compile(r"Name: (.+)\n"r"Email: (.+)\n"r"Phone: (.+)\n"r"Skills: (.+)",re.MULTILINE)
+        match=pattern.findall(data)
+        result={}
+        for name, email, phone, skills in match:
+            skills_list=[skill.strip() for skill in skills.split(',')]
+            result[name] = {
+                'email': email,
+                'phone': phone,
+                'skills': skills_list
+            }
+        return result
+parser = ResumeParser(data)
+result = parser.parse()
+print(result)
+# Expected Output:
+
+# {
+#   'Ravi Kumar': {
+#       'email': 'ravi.k@example.com',
+#       'phone': '+919876543210',
+#       'skills': ['Python', 'Automation', 'Networking']
+#   },
+#   'Priya Sharma': {
+#       'email': 'priya.s@gmail.com',
+#       'phone': '9123456789',
+#       'skills': ['Data Analysis', 'SQL', 'Tableau']
+#   }
+# }
+
+
+# ---
+
+# 🔴 Very Hard (Level 3) — Inheritance + Regex + Dataclass Log Correlator
+
+# Build a log correlation system using OOP and regex.
+# Base class BaseLog defines structure using @dataclass with timestamp, level, and message.
+# Subclasses SystemLog, AppLog, and SecurityLog each parse a different log format using regex.
+# A LogCorrelator class merges parsed logs by timestamp into a dictionary timeline.
+
+
+# Example Input:
+
+# system_log = """
+# [2025-10-06 09:10] SYSTEM: Boot completed
+# [2025-10-06 09:12] SYSTEM: Network up
+# """
+
+# app_log = """
+# 2025/10/06 09:10 - APP - Started main service
+# 2025/10/06 09:13 - APP - Request received
+# """
+
+# security_log = """
+# (2025-10-06 09:12) SECURITY ALERT: User login successful
+# (2025-10-06 09:15) SECURITY ALERT: Unauthorized access attempt
+# """
+
+# Expected Output:
+
+# {
+#   '2025-10-06 09:10': [
+#       {'source': 'SYSTEM', 'msg': 'Boot completed'},
+#       {'source': 'APP', 'msg': 'Started main service'}
+#   ],
+#   '2025-10-06 09:12': [
+#       {'source': 'SYSTEM', 'msg': 'Network up'},
+#       {'source': 'SECURITY', 'msg': 'User login successful'}
+#   ],
+#   '2025-10-06 09:13': [{'source': 'APP', 'msg': 'Request received'}],
+#   '2025-10-06 09:15': [{'source': 'SECURITY', 'msg': 'Unauthorized access attempt'}]
+# }
+
+
+# ---
+
+# 🔴 Very Hard (Level 4) — Dynamic Regex Class Compiler
+
+# Write a class PatternCompiler that:
+# 1. Accepts a dictionary of pattern names → regex expressions.
+# 2. Dynamically creates methods at runtime for each pattern name.
+# 3. Each generated method should return all matches from a given text.
+
+import re
+class PatternCompiler:
+    def __init__(self, patterns):
+        self._patterns = patterns
+        for name, pattern in patterns.items():
+            def make_method(pat):
+                def method(text):
+                    return re.findall(pat, text)
+                return method
+            setattr(self, name, make_method(pattern))
+patterns = {
+    "emails": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+    "phones": r"\+?\d{10,12}",
+    "dates": r"\d{4}-\d{2}-\d{2}"
+}
+compiler = PatternCompiler(patterns)
+text = "Contact us at admin@mail.com or +919812345678 by 2025-10-06."
+print(compiler.emails(text))
+print(compiler.phones(text))
+print(compiler.dates(text))
+
+
+# Expected Output (when calling methods):
+
+# compiler.emails(text) → ['admin@mail.com']
+# compiler.phones(text) → ['+919812345678']
+# compiler.dates(text) → ['2025-10-06']
