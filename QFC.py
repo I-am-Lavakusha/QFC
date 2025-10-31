@@ -1532,10 +1532,13 @@ print(compiler.dates(text))
 # compiler.phones(text) → ['+919812345678']
 # compiler.dates(text) → ['2025-10-06']
 
+<<<<<<< HEAD
 
 # **********************************Day-12***************************************
 
 
+=======
+>>>>>>> cdd2cbeb8fbe52033339ad3ddb6cb6a8919a9613
 # Hard Question 1 — Class + Regex + Multi-Level Dictionary (Access Control Parser)
 
 # Create a class AccessControl that parses a text-based permission list and organizes it into a nested dictionary
@@ -1771,6 +1774,7 @@ except InvalidDataError as e:
 
 # and raise an exception message for the invalid entry:
 # InvalidDataError: Invalid email or phone for entry: Priya
+<<<<<<< HEAD
 
 
 
