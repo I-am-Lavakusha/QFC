@@ -1531,3 +1531,328 @@ print(compiler.dates(text))
 # compiler.emails(text) → ['admin@mail.com']
 # compiler.phones(text) → ['+919812345678']
 # compiler.dates(text) → ['2025-10-06']
+
+
+# **********************************Day-12***************************************
+
+
+# Hard Question 1 — Class + Regex + Multi-Level Dictionary (Access Control Parser)
+
+# Create a class AccessControl that parses a text-based permission list and organizes it into a nested dictionary
+# of {role: {user: [permissions]}}. Use regex to extract fields.
+
+# Example Input:
+import re
+data = """
+Role: Admin | User: Alice | Permissions: Read, Write, Delete
+Role: User | User: Bob | Permissions: Read
+Role: Moderator | User: Charlie | Permissions: Read, Write
+Role: Admin | User: Dave | Permissions: Write, Delete
+"""
+dict1={}
+class AccessControl:
+  def __init__(self, data):
+    self.data=data
+  def res(self):
+    pattern=re.findall(r"\S+\s+(\S+)\s+\|\s+\S+\s+(\S+)\s+\|\s+\S+\s+(.*)", data, re.MULTILINE)
+    for i, j, k in pattern:
+      if i not in dict1:
+        dict1[i]={j:[k]}
+      else:
+        dict1[i].update({j:[k]})
+    return dict1
+
+obj1=AccessControl(data)
+print(obj1.res())
+# Expected Output:
+
+{
+  'Admin': {
+    'Alice': ['Read', 'Write', 'Delete'],
+    'Dave': ['Write', 'Delete']
+  },
+  'User': {'Bob': ['Read']},
+  'Moderator': {'Charlie': ['Read', 'Write']}
+}
+
+
+# ---
+
+# ⚔️ Hard Question 2 — Class + Regex + Dynamic Grouping (Invoice Summarizer)
+
+# You are given invoice details in text format.
+# Build a class InvoiceSummarizer that:
+# 1. Extracts Invoice ID, Customer Name, and Amount using regex.
+# 2. Groups all invoices by Customer Name in a dictionary.
+# 3. Provides a method total_by_customer() that returns each customer’s total billed amount.
+
+# Example Input:
+import re
+data = """
+Invoice: INV001 | Name: John | Amount: $250.50
+Invoice: INV002 | Name: Alice | Amount: $300.00
+Invoice: INV003 | Name: John | Amount: $120.75
+"""
+dict2={}
+class InvoiceSummarizer:
+
+  def __init__(self, data):
+    self.data=data
+  def total_by_customer(self):
+    pattern=re.findall(r"\S+\s+(\S+)\s+\|\s+\S+\s+(\S+)\s+\|\s+\S+\s+\$(\S+)", data, re.MULTILINE)
+    for i, j, k in pattern:
+      if j not in dict2:
+        dict2[j]={"invoices":[i], "total":float(k)}
+      else:
+        dict2[j]["invoices"].append(i)
+        dict2[j]["total"]+=float(k)
+    print(dict2)
+obj2=InvoiceSummarizer(data)
+obj2.total_by_customer()
+
+# Expected Output:
+
+# {
+#   'John': {'invoices': ['INV001', 'INV003'], 'total': 371.25},
+#   'Alice': {'invoices': ['INV002'], 'total': 300.00}
+# }
+
+
+# ---
+
+# ⚔️ Hard Question 3 — Class + Regex Pattern Dispatcher (Custom Command Interpreter)
+
+# Create a class CommandInterpreter that reads input lines representing shell-like commands
+# and uses regex to identify command types and store execution metadata in a dictionary.
+# Each command has one of these forms:
+# The class should categorize commands by action and record their arguments.
+
+import re
+data="""
+COPY source.txt destination/
+MOVE file1.txt folderA/
+DELETE temp.log
+"""
+dict3={}
+class CommandInterpreter:
+  def __init__(self, data):
+    self.data=data
+  
+  def commands(self):
+    pattern=re.findall(r"(\S+)\s+(\S+\.\S+)(?:\s+(.+))?", data, re.MULTILINE)
+    for i, j, k in pattern:
+      if i=="DELETE":
+        dict3[i]=[{"file":j}]
+      else:
+        dict3[i]=[{"src":j, "dest":k}]
+    print(dict3)
+obj3=CommandInterpreter(data)
+obj3.commands()
+# Expected Output:
+
+# {
+#   'COPY': [{'src': 'source.txt', 'dest': 'destination/'}],
+#   'MOVE': [{'src': 'file1.txt', 'dest': 'folderA/'}],
+#   'DELETE': [{'file': 'temp.log'}]
+# }
+
+
+# ---
+
+# ⚔️ Hard Question 4 — Regex + Class + Data Linking (Employee Hierarchy Builder)
+
+# Given a company hierarchy text, create a class HierarchyBuilder
+# that uses regex to build a manager–employee dictionary tree.
+
+# Example Input:
+import re
+data = """
+Manager: Alice -> Employees: Bob, Carol
+Manager: Bob -> Employees: David, Emma
+Manager: Carol -> Employees: Frank
+"""
+dict4 = {}
+
+class Company:
+    def __init__(self, data):
+        self.data = data
+
+    def managers(self):
+        pattern = re.findall(r"\S+\s+(\S+)\s+\S+\s+\S+\s+(.+)", self.data)
+
+        connection = {}
+        for manager, employees in pattern:
+            emp_list = [e.strip().strip(',') for e in employees.split()]
+            connection[manager] = emp_list
+
+        print(connection)
+
+        for manager, emps in connection.items():
+            if manager not in dict4:
+                dict4[manager] = {}
+            for emp in emps:
+                dict4[manager][emp] = {}
+
+        for manager in list(dict4.keys()):
+            if manager not in dict4:
+                continue
+            for emp in list(dict4[manager].keys()):
+                if emp in dict4:
+                    dict4[manager][emp] = dict4[emp]
+                    del dict4[emp]
+
+        print(dict4)
+
+obj4 = Company(data)
+obj4.managers()
+
+
+# Expected Output:
+
+{
+  'Alice': {
+    'Bob': {'David': {}, 'Emma': {}},
+    'Carol': {'Frank': {}}
+  }
+}
+
+# (Nested structure: each manager key holds sub-dictionaries of their team.)
+
+
+# ---
+
+# ⚔️ Hard Question 5 — Class + Regex Validation + Custom Exception Handling
+
+# Create a class FormValidator that validates a set of form entries from text.
+# Each entry includes name, email, and phone.
+# Use regex validation and raise a custom InvalidDataError for incorrect records.
+# Store valid entries in a dictionary {name: {'email': ..., 'phone': ...}}.
+
+# Example Input:
+
+import re
+class InvalidDataError(Exception):
+    pass
+class FormValidator:
+    def __init__(self, data):
+        self.data = data
+        self.valid_entries = {}
+
+    def validate(self):
+        pattern = r"Name:\s*(\S+)\s*\|\s*Email:\s*([\w\.\@\+]+)\s*\|\s*Phone:\s*([\+\d]+)"
+        entries = re.findall(pattern, self.data)
+        e_pattern = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w+$")
+        p_pattern = re.compile(r"^(?:\+\d{12}|\d{10})$")
+
+        for name, email, phone in entries:
+            if not e_pattern.match(email) or not p_pattern.match(phone):
+                raise InvalidDataError(f"Invalid email or phone for entry: {name}")
+            self.valid_entries[name] = {'email': email, 'phone': phone}
+
+        return self.valid_entries
+data = """ 
+Name: Ravi | Email: ravi@mail.com | Phone: 9876543210 
+Name: Priya | Email: priya@@gmail | Phone: 999999 
+Name: Arjun | Email: arjun.k@gmail.com | Phone: +919812345678
+"""
+try:
+    validator = FormValidator(data)
+    result = validator.validate()
+    print(result)
+except InvalidDataError as e:
+    print(e)
+
+# Expected Output:
+
+# {
+#   'Ravi': {'email': 'ravi@mail.com', 'phone': '9876543210'},
+#   'Arjun': {'email': 'arjun.k@gmail.com', 'phone': '+919812345678'}
+# }
+
+# and raise an exception message for the invalid entry:
+# InvalidDataError: Invalid email or phone for entry: Priya
+
+
+
+
+# ***************************ATM Program***************************************
+import sys
+class Atm:
+  def __init__(self):
+    self.pwd=""
+    self.money=0
+    self.menu()
+  
+  def menu(self):
+    choice=input("""
+    To create pin enter:1
+    To deposit money enter:2
+    To withdraw money enter:3
+    To check balance enter:4
+    To exit enter:5
+""")
+  
+    if choice=="1":
+      self.create_pin()
+    elif choice=="2":
+      self.deposit()
+    elif choice=="3":
+      self.withdraw()
+    elif choice=="4":
+      self.balance()
+    elif choice=="5":
+      sys.exit()
+    else:
+      print("Invalid choice pick a right one")
+    self.menu()
+
+  def create_pin(self):
+    pin=input("Enter the pin: ")
+    validate=input("confirm your pin: ")
+    if pin==validate:
+      self.pwd=pin
+      print("Pin set successfully🙌")
+    else:
+      print("pin is not matching🤔")
+    
+  def deposit(self):
+      pin=input('enter the pin: ')
+      if pin==self.pwd:
+        amount=int(input("enter the amount you need to deposit: "))
+        self.money=self.money+amount
+        print("money deposited successfully")
+      else:
+        print("Invalid pin try again")
+    
+  def withdraw(self):
+    pin=input("enter your pin: ")
+    if pin==self.pwd:
+      amount=int(input("enter the amount to withdraw: "))
+      if amount>self.money:
+        print("insuffiecient balance")
+        check=input("Do you want to know your balance yes/no: ")
+        if check.lower()=="yes":
+          self.balance()
+        else:
+          self.menu()
+      else:
+        self.money=self.money-amount
+        print("collect your cash")
+        check_balance=input("do you want to check your remaining balance yes/no: ")
+        if check_balance.lower()=="yes":
+          self.balance()
+        else:
+          print("Thank you for using our atm")
+          sys.exit()
+    else:
+      print("Invalid pin try again")
+      self.withdraw()
+
+  def balance(self):
+    pin=input("enter your pin: ")
+    if pin==self.pwd:
+      print(self.money)
+    else:
+      print("Invalid pin try again")
+
+obj=Atm()
