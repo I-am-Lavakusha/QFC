@@ -30,3 +30,51 @@ https://www.hackerrank.com/challenges/time-conversion/problem?isFullScreen=true
 
 # 11. Grading students
 https://www.hackerrank.com/challenges/grading/problem?isFullScreen=true
+
+06/11/2025 
+#1. find the runner up score
+if __name__ == '__main__':
+    n = int(input())
+    arr = map(int, input().split())
+    arr=list(arr)
+    max1=max(arr)
+    arr=list(set(arr))
+    arr.remove(max1)
+    print(max(arr))
+https://www.hackerrank.com/challenges/find-second-maximum-number-in-a-list/problem?isFullScreen=true
+
+#2. Nested list by finding the second lowest grade
+if __name__ == '__main__':
+    result=[]
+    for i in range(int(input())):
+        name = input()
+        score = float(input())
+        result.append([name,score])
+    compare=sorted(set(y for x, y in result))
+    sec=compare[1]
+    res=[]
+    for i,j in result:
+        if j==sec:
+            res.append(i)
+    for i in sorted(res):
+        print(i)
+
+#3.Validate phone number
+https://www.hackerrank.com/challenges/validating-the-phone-number/problem?isFullScreen=true
+import re
+n=int(input())
+phones=[]
+for i in range(n):
+    phone=input()
+    phones.append(phone)
+for i in phones:
+    if len(str(i))!=10:
+        print("NO")
+    else:
+        comp=re.findall(r"[\d+]", str(i))
+        if len(comp)!=10:
+            print("NO")
+        elif comp[0]=="7" or comp[0]=="9" or comp[0]=="8":
+            print("YES")
+        else:
+            print("NO")
