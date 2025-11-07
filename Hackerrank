@@ -78,3 +78,98 @@ for i in phones:
             print("YES")
         else:
             print("NO")
+
+
+07-11-2025
+1.Migrating birds
+def migratoryBirds(arr):
+    freq = {}
+    for bird in arr:
+        freq[bird] = freq.get(bird, 0) + 1
+    max_count = max(freq.values())
+    return min([k for k, v in freq.items() if v == max_count])
+
+2.DIvisible Sum pairs
+def divisibleSumPairs(n, k, ar):
+    # Write your code here
+    count=0
+    for i in range(n):
+        for j in range(i+1,n):
+            if (ar[i]+ar[j])%k==0:
+                count+=1
+    return count
+
+3.Subarray Division
+def birthday(s, d, m):
+    n=len(s)
+    count=0
+    sum1=sum(s[:m])
+    if sum1==d:
+        count+=1
+    for i in range(m,n):
+        sum1=sum1-s[i-m]+s[i]
+        if sum1==d:
+            count+=1
+    return count
+
+4.Breaking the records
+def breakingRecords(scores):
+    lowest=scores[0]
+    low=0
+    highest=scores[0]
+    high=0
+    for i in range(1,len(scores)):
+        if scores[i]>highest:
+            highest=scores[i]
+            high+=1
+        if scores[i]<lowest:
+            lowest=scores[i]
+            low+=1
+    return high,low
+
+5.Between two sets
+def getTotalX(a, b):
+    count=0
+    for i in range(a[len(a)-1],b[0]+1):
+        flag=True
+        for j in a:
+            if i%j!=0:
+                flag=False
+                break
+        for k in b:
+            if k%i!=0:
+                flag=False
+                break
+        if flag:
+            count+=1
+    return count 
+
+6.Number line jumps
+def kangaroo(x1, v1, x2, v2):
+    # if x1<x2 and v1<v2:
+        # return "NO";
+    if (v1 > v2 and ((x2 - x1) % (v1 - v2)) == 0) or (x1 == x2):
+        return "YES"
+    else:
+        return "NO"
+
+7.Apple and Orange
+
+def countApplesAndOranges(s, t, a, b, apples, oranges):
+    apple=0;
+    orange=0;
+    for i in range(len(apples)):
+        a1=a+apples[i]
+        if a1>=s and a1<=t:
+            apple+=1
+    # if len(oranges)<=0:
+    #     print(0)
+    # else:
+    for k in range(len(oranges)):
+        k1=b+oranges[k]
+        if k1>=s and k1<=t:
+            orange+=1
+    print(apple);
+    print(orange);
+
+8.
