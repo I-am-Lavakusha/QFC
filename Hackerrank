@@ -172,4 +172,23 @@ def countApplesAndOranges(s, t, a, b, apples, oranges):
     print(apple);
     print(orange);
 
-8.
+10/10/2025
+1.Counting Valleys
+def countingValleys(steps, path):
+    start=0
+    res=0
+    for i in path:
+        if i=='U':
+            start+=1
+            if start==0:
+                res+=1
+        else:
+            start-=1
+    return res
+
+2.Page Count
+def pageCount(n, p):
+    return min(p,n-p + (n%2!=1))//2
+
+
+    
