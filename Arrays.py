@@ -12,3 +12,11 @@ def hourglassSum(arr):
                 max1=a
     return max1
         
+# 3.Electronics shop
+def getMoneySpent(keyboards, drives, b):
+    max1=-1
+    for i in keyboards:
+        for j in drives:
+            if i+j<=b and i+j>max1:
+                max1=i+j
+    return max1
