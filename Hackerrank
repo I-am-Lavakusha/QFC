@@ -190,5 +190,18 @@ def countingValleys(steps, path):
 def pageCount(n, p):
     return min(p,n-p + (n%2!=1))//2
 
+13-11-2025
+
+1.Cats and a Mouse
+def catAndMouse(x, y, z):
+    a=abs(z-x)
+    b=abs(z-y)
+    if a>b:
+        return "Cat B"
+    elif a==b:
+        return "Mouse C"
+    else:
+        return "Cat A"
+
 
     
