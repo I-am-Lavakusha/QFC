@@ -1,3 +1,1 @@
-while num<10:
-  print(num)
-  num=num+1
+  return sorted(s1)==sorted(s2)
